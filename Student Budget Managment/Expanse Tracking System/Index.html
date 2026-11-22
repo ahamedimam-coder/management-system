@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Expense Tracker 2026</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<div class="app-container">
+
+    <!-- Sidebar -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <i class="fa-solid fa-wallet"></i>
+            <h2>FinTrack<span>.</span></h2>
+        </div>
+
+        <p class="menu-title">MENU</p>
+
+        <nav>
+            <a href="#" class="active">
+                <i class="fa-solid fa-house"></i> Dashboard
+            </a>
+
+            <a href="#">
+                <i class="fa-solid fa-money-bill-transfer"></i> Transactions
+            </a>
+
+            <a href="#">
+                <i class="fa-solid fa-arrow-down"></i> Income
+            </a>
+
+            <a href="#">
+                <i class="fa-solid fa-arrow-up"></i> Expenses
+            </a>
+
+            <a href="#">
+                <i class="fa-solid fa-chart-pie"></i> Analytics
+            </a>
+
+            <a href="#">
+                <i class="fa-solid fa-file-invoice"></i> Reports
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <a href="#">
+                <i class="fa-solid fa-gear"></i> Settings
+            </a>
+        </div>
+
+    </aside>
+
+
+    <!-- Main Content -->
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+                <h1>Dashboard</h1>
+                <p>Welcome back! Here's your financial overview.</p>
+            </div>
+
+            <div class="top-actions">
+
+                <button class="theme-btn" onclick="toggleTheme()">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+
+                <div class="profile">
+                    <div class="avatar">IM</div>
+                    <div>
+                        <h4>Admin</h4>
+                        <small>Personal Account</small>
+                    </div>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- Summary Cards -->
+
+        <section class="cards">
+
+            <div class="card balance">
+                <div class="card-top">
+                    <span>Total Balance</span>
+                    <i class="fa-solid fa-wallet"></i>
+                </div>
+                <h2 id="balance">Rs. 0.00</h2>
+                <p>Available Balance</p>
+            </div>
+
+            <div class="card income">
+                <div class="card-top">
+                    <span>Total Income</span>
+                    <i class="fa-solid fa-arrow-down"></i>
+                </div>
+                <h2 id="income">Rs. 0.00</h2>
+                <p>Your total earnings</p>
+            </div>
+
+            <div class="card expense">
+                <div class="card-top">
+                    <span>Total Expenses</span>
+                    <i class="fa-solid fa-arrow-up"></i>
+                </div>
+                <h2 id="expense">Rs. 0.00</h2>
+                <p>Your total spending</p>
+            </div>
+
+            <div class="card savings">
+                <div class="card-top">
+                    <span>Total Savings</span>
+                    <i class="fa-solid fa-piggy-bank"></i>
+                </div>
+                <h2 id="savings">Rs. 0.00</h2>
+                <p>Your remaining savings</p>
+            </div>
+
+        </section>
+
+
+        <!-- Charts -->
+
+        <section class="chart-section">
+
+            <div class="chart-box">
+                <h3>Financial Overview</h3>
+                <canvas id="overviewChart"></canvas>
+            </div>
+
+            <div class="chart-box">
+                <h3>Expense Categories</h3>
+                <canvas id="categoryChart"></canvas>
+            </div>
+
+        </section>
+
+
+        <!-- Transaction Modal -->
+
+<div class="modal-overlay" id="transactionModal">
+
+    <div class="modal">
+
+        <div class="modal-header">
+            <div>
+                <h2 id="modalTitle">Add Transaction</h2>
+                <p>Enter your transaction details</p>
+            </div>
+
+            <button class="close-btn" onclick="closeModal()">
+                &times;
+            </button>
+        </div>
+
+        <form id="transactionForm">
+
+            <label>Transaction Type</label>
+
+            <div class="type-selection">
+
+                <button type="button" class="type-btn active"
+                    data-type="expense">
+                    <i class="fa-solid fa-arrow-up"></i>
+                    Expense
+                </button>
+
+                <button type="button" class="type-btn"
+                    data-type="income">
+                    <i class="fa-solid fa-arrow-down"></i>
+                    Income
+                </button>
+
+            </div>
+
+            <input type="hidden" id="transactionType" value="expense">
+
+            <label>Transaction Title</label>
+
+            <input type="text" id="transactionTitle"
+                placeholder="Enter transaction title" required>
+
+            <label>Amount (LKR)</label>
+
+            <input type="number" id="transactionAmount"
+                placeholder="Enter amount" min="0.01"
+                step="0.01" required>
+
+            <label>Category</label>
+
+            <select id="transactionCategory" required>
+                <option value="">Select Category</option>
+                <option>Food</option>
+                <option>Shopping</option>
+                <option>Travel</option>
+                <option>Bills</option>
+                <option>Education</option>
+                <option>Health</option>
+                <option>Salary</option>
+                <option>Business</option>
+                <option>Other</option>
+            </select>
+
+            <label>Date</label>
+
+            <input type="date" id="transactionDate" required>
+
+            <button type="submit" class="submit-btn">
+                Save Transaction
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+        <!-- Recent Transactions -->
+
+        <section class="transactions">
+
+            <div class="transaction-header">
+                <!-- Transaction Filters -->
+
+<div class="filter-container">
+
+    <input
+        type="text"
+        id="searchInput"
+        placeholder="🔍 Search transactions..."
+    >
+
+    <select id="categoryFilter">
+        <option value="">All Categories</option>
+        <option>Food</option>
+        <option>Shopping</option>
+        <option>Travel</option>
+        <option>Bills</option>
+        <option>Education</option>
+        <option>Health</option>
+        <option>Salary</option>
+        <option>Business</option>
+        <option>Other</option>
+    </select>
+
+    <select id="typeFilter">
+        <option value="">All Types</option>
+        <option value="income">Income</option>
+        <option value="expense">Expense</option>
+    </select>
+
+    <input type="date" id="startDate">
+
+    <input type="date" id="endDate">
+
+    <button onclick="resetFilters()" class="reset-btn">
+        Reset
+    </button>
+
+</div>
+                <h3>Recent Transactions</h3>
+
+                <button onclick="addTransaction()">
+                    + Add Transaction
+                </button>
+            </div>
+
+            <div class="table-wrapper">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="transactionList">
+                        <tr>
+                            <td colspan="5">No transactions yet.</td>
+                        </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="js/app.js"></script>
+
+</body>
+</html>
